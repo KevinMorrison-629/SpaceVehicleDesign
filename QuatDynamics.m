@@ -12,8 +12,8 @@ clc;
 
 % Simulation Parameters:
 global DT
-SIM_LENGTH = 10; % length of simulation (in seconds)
-DT = 0.01; % timestep length (in seconds)
+SIM_LENGTH = 15; % length of simulation (in seconds)
+DT = 0.001; % timestep length (in seconds)
 
 % Initial Conditions
 % though the simulation is done in quaternions, it is simpler for users to
@@ -21,27 +21,27 @@ DT = 0.01; % timestep length (in seconds)
 % inputted using Euler Angles and then converted into quaternions for use
 % in the simulation.
 initial_EulerAngles = [1.5; 2.2; 4.5]; % radians
-initial_AngularVelocity = 4*[1.1; 1.2; -1.33]; % radians/second
+initial_AngularVelocity = 2*[1.1; 1.2; -1.33]; % radians/second
 
 desired_EulerAngles = [0; 0; 0];
 desired_AngularVelocity = [0; 0; 0];
 
 % Spacecraft Properties
-I = [5, 0, 0 ;
-     0, 5, 0;
-     0, 0, 5]; % Moment of Inertia (kg*m^2)
+I = [340.87, 104.95, 127.92 ;
+     104.95, 390.52, 124.63;
+     127.92, 124.63, 379.42] / (1000); % Moment of Inertia (kg*m^2)
 I_inv = pinv(I);
 
 
 % Controller Properties
 global MC_saturate MC_history
-MC_saturate = 12; % the saturation value for the control actuator
+MC_saturate = 0.2; % the saturation value for the control actuator
 MC_history = [];
 
 
 % if PID:
-K_EA = 1.0*[5; 5; 5];
-K_om = 1.0*[1.0; 1; 0.5];
+K_EA = 0.01*[1; 1; 1];
+K_om = 0.2*[1; 1; 1];
 global q_error_int q_error_prev w_error_int w_error_prev
 q_error_int = 0;
 q_error_prev = 0;
@@ -118,15 +118,15 @@ ylabel('Euler Symmetric Parameter')
 title('')
 legend('q0','q1','q2','q3')
 
-figure(3)
-plot(time, MC_history(1,:))
-hold on
-plot(time, MC_history(2,:))
-plot(time, MC_history(3,:))
-xlabel('Time')
-ylabel('Controller History (N-m)')
-title('')
-legend('Mx','My','Mz')
+% figure(3)
+% plot(time, MC_history(1,:))
+% hold on
+% plot(time, MC_history(2,:))
+% plot(time, MC_history(3,:))
+% xlabel('Time')
+% ylabel('Controller History (N-m)')
+% title('')
+% legend('Mx','My','Mz')
 
 
 %% Useful Functions
